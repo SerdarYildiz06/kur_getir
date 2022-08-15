@@ -11,8 +11,6 @@ Future<KurModel?> getUserList() async {
   );
 
   final item = json.decode(response.body);
-  print("item" + item.toString());
   result = KurModel.fromJson(item);
-  print("RESULT" + result.toString());
   return result;
 }

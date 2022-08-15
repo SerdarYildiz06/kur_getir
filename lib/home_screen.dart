@@ -21,80 +21,77 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<ApiProvider>(context);
+    ApiProvider model = Provider.of<ApiProvider>(context);
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-          child: ListView.builder(
-        itemCount: model.model?.tCMBAnlikKurBilgileri?.length,
-        itemBuilder: (context, index) {
-          TCMBAnlikKurBilgileri? data = model.model?.tCMBAnlikKurBilgileri?[index];
-          /* return ListTile(
-            title: Text(data?.banknoteBuying.toString() ?? 'null'),
-            subtitle: Text(data?.crossRateUSD.toString() ?? 'null'),
-            // leading: Image.network(data?.currencyName.toString() ?? ''),
-          );*/
-          return Card(
-            child: SizedBox(
-              height: 150,
-              width: double.infinity,
-              child: Row(
-                children: [
-                  /*  Column(
-                    children: [
-                      Text(data?.isim.toString() ?? ''),
-                    ],
-                  ),*/
-
-                  SizedBox(
-                    height: 20,
-                    width: 125,
-                    child: Text(
-                      data!.currencyName!.toTitleCase(),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 25,
-                  ),
-                  Column(
-                    children: [
-                      Image.asset(
-                        'assets/forex.png',
-                        height: 50,
-                        width: 50,
-                      ),
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      Image.asset(
-                        'assets/bank_icon.png',
-                        height: 50,
-                        width: 50,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    children: [
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text('Forex Buying ${data.forexBuying?.toString()}'),
-                      Text('Forex Selling ${data.forexSelling.toString()}'),
-                      const SizedBox(
-                        height: 45,
-                      ),
-                      Text('Bank Buying ${data.banknoteBuying?.toString()}'),
-                      Text('Bank Selling ${data.banknoteSelling?.toString()}'),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
+          child: RefreshIndicator(
+        onRefresh: () async {
+          await model.getKur();
         },
+        child: ListView.builder(
+          itemCount: model.model?.tCMBAnlikKurBilgileri?.length,
+          itemBuilder: (context, index) {
+            TCMBAnlikKurBilgileri? data = model.model?.tCMBAnlikKurBilgileri?[index];
+
+            return model.loading
+                ? const CircularProgressIndicator()
+                : Card(
+                    child: SizedBox(
+                      height: 150,
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: 20,
+                            width: 125,
+                            child: Text(
+                              data!.currencyName!.toTitleCase(),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 25,
+                          ),
+                          Column(
+                            children: [
+                              Image.asset(
+                                'assets/forex.png',
+                                height: 50,
+                                width: 50,
+                              ),
+                              const SizedBox(
+                                height: 25,
+                              ),
+                              Image.asset(
+                                'assets/bank_icon.png',
+                                height: 50,
+                                width: 50,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            children: [
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Text('Forex Buying ${data.forexBuying?.toString()}'),
+                              Text('Forex Selling ${data.forexSelling.toString()}'),
+                              const SizedBox(
+                                height: 45,
+                              ),
+                              Text('Bank Buying ${data.banknoteBuying?.toString()}'),
+                              Text('Bank Selling ${data.banknoteSelling?.toString()}'),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+          },
+        ),
       )),
     );
   }
